@@ -10,7 +10,7 @@ public class ApiClient {
   }
 
   public String getDistributionPoints(boolean canCustomerCollect) {
-    String path = "https://api-sandbox.ninjavan.co/sg/2.1/pudos";
+    String path = "path";
 
     RequestSpecification request = RestAssured
         .given()
