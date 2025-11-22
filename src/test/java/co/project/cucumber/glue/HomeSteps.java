@@ -44,13 +44,28 @@ public class HomeSteps {
   }
 
   @And("QA verify if user arrived at homepage")
-  public void qaVerifyArrivedHomepahe() {
+  public void qaVerifyArrivedHomepage() {
     homepage.qaVerifyHomepage();
+  }
+
+  @And("QA verify that error message {string} is displayed")
+  public void qaVerifyErroDialog(String errorMsg) {
+    homepage.qaVerifyErrorMessage(errorMsg);
   }
 
   @And("QA click Submit button on the login page")
   public void qaClickSubmitButton() {
     homepage.clickSubmitLoginButton();
+  }
+
+  @And("QA click close error button on the login page")
+  public void qaClickCloseErrorButton() {
+    homepage.clickCloseErrorButton();
+  }
+
+  @And("QA verify that component with data-test {string} is NOT displayed on the page")
+  public void qaVerifyComponentIsNotDisplayed(String dataTest) {
+    homepage.qaVerifyComponentIsNotDisplayed(dataTest);
   }
 
   @And("QA search order with tracking ID {string} and make sure that the order is found")

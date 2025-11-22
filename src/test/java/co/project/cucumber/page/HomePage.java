@@ -2,6 +2,7 @@ package co.project.cucumber.page;
 
 import java.time.Duration;
 import java.util.HashMap;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -14,10 +15,13 @@ public class HomePage  {
   private static final String usernameFieldXpath = "//input[@id='user-name']";
   private static final String passwordFieldXpath = "//input[@id='password']";
   private static final String submitButtonXpath = "//input[@id='login-button']";
+  private static final String closeErrorButtonXpath = "//button[@data-test='error-button']";
   private static final String searchFieldXpath = "//div[@data-testid='home-page-search']//input";
   private static final String logoXpath = "//img[@data-testid='nv-logo']";
   private static final String dropdownXpath = "//span[@data-key='home_page_try_entering_full_tracking_id']";
   private static final String productXpath = "//div[contains(text(),'Sauce Labs Backpack')]";
+  private static final String errorDialogXpath = "//div/h3[@data-test='error']";
+  private static final String anyComponentWithDataTest = "//*[@data-test='%s']";
   private static final HashMap<String, String> pageForCountry = new HashMap<>();
 
   static {
@@ -67,6 +71,12 @@ public class HomePage  {
     }
   }
 
+  public void qaVerifyErrorMessage(String errorMessage) {
+    WebElement errorDialog = getWebDriver().findElement(By.xpath(errorDialogXpath));
+
+    Assertions.assertEquals(errorDialog.getText(), errorMessage);
+  }
+
   public void qaVerifyHomepage() {
     boolean product = getWebDriver().findElement(By.xpath(productXpath)).isDisplayed();
 
@@ -81,6 +91,12 @@ public class HomePage  {
 
   public void clickSubmitLoginButton() {
     getWebDriver().findElement(By.xpath(submitButtonXpath)).click();
+  }
+
+  public void clickCloseErrorButton() {
+    WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(10));
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(closeErrorButtonXpath)));
+    getWebDriver().findElement(By.xpath(closeErrorButtonXpath)).click();
   }
 
   public void qaSearchOrderWithTrackingId(String trackingId) {
@@ -105,5 +121,21 @@ public class HomePage  {
     WebElement orderTextOnPage = getWebDriver().findElement(
         By.xpath("//div[@data-testid='order-details-header']/div[2]"));
     Assertions.assertEquals(orderTextOnPage.getText(), trackingId);
+  }
+
+
+  public boolean isElementNotDisplayed(String dataTest) {
+    try {
+      WebDriverWait wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(2));
+      return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(String.format(anyComponentWithDataTest, dataTest))));
+    } catch (Exception e) {
+      return true;
+    }
+  }
+
+  public void qaVerifyComponentIsNotDisplayed(String dataTest) {
+    if (!isElementNotDisplayed(dataTest)) {
+      Assertions.fail("QA check result: Component is STILL displayed on the page");
+    }
   }
 }
